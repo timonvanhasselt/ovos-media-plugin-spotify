@@ -59,7 +59,7 @@ ocp_spotify oauth token saved
 
 
 ## Spotify via OVOS
-If you want to make the OVOS device itself a spotify player, we recommend to install [spotifyd](https://github.com/Spotifyd/spotifyd).
+If you want to make the OVOS device itself a Spotify player, we recommend to install [spotifyd](https://github.com/Spotifyd/spotifyd).
 
 1. Install or build Spotifyd (in this example we install it in /home/ovos/.local/bin/)
 2. Create user config named spotifyd.conf in ~/.config/spotifyd, see [example config](https://docs.spotifyd.rs/config/File.html) 
