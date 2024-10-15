@@ -17,7 +17,7 @@ Allows OVOS to initiate playback on Spotify
 To play Spotify on connected speakers or other devices remotely via OVOS voice commands, follow these steps:
 
 ### Spotify developer account
-1. Log in at developer.spotify.com and set up a developer account, create an "Application".
+1. Log in at [developer.spotify.com](developer.spotify.com) and set up a developer account, create an "Application".
 2. Add "https://localhost:8888" as the redirect URL, and choose 'add'.
 3. Accept the terms and choose save.
 4. Go to settings.
