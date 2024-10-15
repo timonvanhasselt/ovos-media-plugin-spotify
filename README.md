@@ -2,7 +2,7 @@
 
 spotify plugin for [ovos-audio](https://github.com/OpenVoiceOS/ovos-audio) and [ovos-media](https://github.com/OpenVoiceOS/ovos-media)
 
-allows OVOS to initiate playback on spotify 
+Allows OVOS to initiate playback on Spotify 
 
 > NOTE: [the companion skill](https://github.com/OpenVoiceOS/skill-ovos-spotify) is needed to integrate with voice search
 
@@ -10,11 +10,25 @@ allows OVOS to initiate playback on spotify
 
 `pip install ovos-media-plugin-spotify`
 
-## Oauth
 
-Currently Oauth needs to be performed manually
 
-after installing the plugin run `ovos-spotify-oauth` on the command line and follow the instructions
+## Play Spotify on another device
+
+To play Spotify on connected speakers or other devices remotely via OVOS voice commands, follow these steps:
+
+### Spotify developer account
+1. Log in at developer.spotify.com and set up a developer account, create an "Application".
+2. Add "https://localhost:8888" as the redirect URL, and choose 'add'.
+3. Accept the terms and choose save.
+4. Go to settings.
+5. Copy the ClientID
+
+
+### OAuth
+Currently Oauth needs to be performed manually.
+Make sure the ovos-media-plugin-spotify is installed. 
+
+1. Run `ovos-spotify-oauth` on the command line and follow the instructions
 
 ```
 $ ovos-spotify-oauth
@@ -35,13 +49,43 @@ Enter the URL you were redirected to: https://localhost:8888/?code=.....
 ocp_spotify oauth token saved
 ```
 
+2. Paste your ClientID
+3. Copy the Client secret in the Spotify developer site.
+4. Copy the URL from the command line and open it in the browser.
+5. Choose accept in the Spotify screen; you will be redirected.
+6. Copy the redirect URL from the page that is opened (alltough it gives a 'can't connect error')
+7. Past the URL in the command line
+8. The ocp_spotify oauth token saved at ~/.config/spotipy
+
+
+## Spotify via OVOS
+If you want to make the OVOS device itself a spotify player, we recommend to install [spotifyd](https://github.com/Spotifyd/spotifyd).
+
+1. Install or build Spotifyd (in this example we install it in /home/ovos/.local/bin/)
+2. Create user config named spotifyd.conf in ~/.config/spotifyd, see [example config](https://docs.spotifyd.rs/config/File.html) 
+3. Comment username and password to let Spotifyd automatically search for credentials. 
+4. Comment also proxy 
+5. Set `cache_path` to a writable directory (e.g. `/home/user/.cache/spotifyd`)
+6. Set the device_name, device_name = "device_name_in_spotify_connect"
+7. Run ~/spotifyd --no-daemon in the command line
+8. Connect with any of the official clients to `spotifyd` (which has to be on the same network).
+9. Stop `spotifyd`. In the cache directory that you set before, there is now a file called `credentials.json`. Note: in version 0.35 it currently doesn't work, in 0.34 it is.
+10. Copy the username of `credentials.json` and uncomment and set the username in spotifyd.conf
+11. Start `spotifyd` again with ~/spotifyd --no-daemon, it should now authenticate successfully
+
+To use OVOS commands like pause, play, resume etc:
+
+12. Copy [spotifyd_hooks.py](https://github.com/OpenVoiceOS/ovos-media-plugin-spotify/blob/1dccb60de2750224b4018f3a9c7e532c3c15b760/spotifyd_hooks.py) to your install
+13. Run `spotifyd` with 
+```
+/home/ovos/.local/bin/spotifyd --device-type "speaker" --initial-volume 100 --on-song-change-hook "/home/ovos/.venvs/ovos/bin/python /home/ovos/spotifyd_hooks.py" --no-daemon
+```
+
 ## Configuration
 
-edit your mycroft.conf with any spotify players you want to expose
-
-> NOTE: If you want to make the OVOS device itself a spotify player, we recommend [spotifyd](https://github.com/Spotifyd/spotifyd).
-
-The easiest way is to use the provided `ovos-spotify-autoconfigure` command
+Edit your user mycroft.conf with any Spotify players you want to expose. The configuration is needed for both situations (OVOS as a player or remote for other devices).
+The easiest way is to use the provided `ovos-spotify-autoconfigure` command. 
+It will automatically search for all the Spotify clients on the same network.
 
 ```bash
 $ ovos-spotify-autoconfigure
@@ -110,7 +154,7 @@ mycroft.conf updated!
 
 ## Python usage
 
-if you don't want to use [the companion skill](https://github.com/OpenVoiceOS/skill-ovos-spotify), you can also write your own integrations
+If you don't want to use [the companion skill](https://github.com/OpenVoiceOS/skill-ovos-spotify), you can also write your own integrations
 
 ```python
 s = SpotifyClient()
